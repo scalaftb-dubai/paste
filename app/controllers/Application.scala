@@ -9,7 +9,9 @@ object Application extends Controller {
 
   val pastes = scala.collection.mutable.Map[UUID, Paste]()
  
-  def paste = TODO
+  def paste = Action {
+    Ok(views.html.paste())
+  }
 
   def index(content: Option[String], id: Option[String]) = Action {
     val pasteId = if (id.isDefined) UUID.fromString(id.get) else UUID.randomUUID
