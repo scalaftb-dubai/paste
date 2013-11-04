@@ -4,22 +4,20 @@ import play.api._
 import play.api.mvc._
 import models.Paste
 import java.util.UUID
+import models.PasteMapDAO
+import models.PasteElastic4sDAO
 
 object Application extends Controller {
 
-  val pastes = scala.collection.mutable.Map[UUID, Paste]()
- 
+//  val dao = PasteMapDAO()
+  val dao = PasteElastic4sDAO()
+  
   def paste = Action {
     Ok(views.html.paste())
   }
 
   def index(content: Option[String], id: Option[String]) = Action {
-    val pasteId = if (id.isDefined) UUID.fromString(id.get) else UUID.randomUUID
-    val paste = pastes.getOrElse(pasteId, {
-    	val newPaste = Paste(content getOrElse("No paste"), pasteId)
-    	pastes += pasteId -> newPaste
-    	newPaste
-    })
+    val paste = dao.getOrCreate(id, content)
     Ok(views.html.index("Your new application is ready.", paste))
   }
  
